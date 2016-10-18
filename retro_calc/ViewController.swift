@@ -17,7 +17,6 @@ class ViewController: UIViewController {
         case Multiply = "*"
         case Subtract = "-"
         case Add = "+"
-        case Equals = "Equal"
         case Empty = "Empty"
     }
     
@@ -29,6 +28,7 @@ class ViewController: UIViewController {
     var leftValStr = ""
     var rightValStr = ""
     var CurrentOperation: Operation = Operation.Empty
+    var result = ""
     
     
     override func viewDidLoad() {
@@ -54,18 +54,63 @@ class ViewController: UIViewController {
     }
     
     @IBAction func onDividePressed(sender: AnyObject) {
+        processOperation(Operation.Divide)
     }
     
     @IBAction func onMulPressed(sender: AnyObject) {
+        processOperation(Operation.Multiply)
     }
     
     @IBAction func onSubtractPressed(sender: AnyObject) {
+        processOperation(Operation.Subtract)
     }
     
     @IBAction func onAddPressed(sender: AnyObject) {
+        processOperation(Operation.Add)
     }
     
     @IBAction func onEqualPressed(sender: AnyObject) {
+        processOperation(CurrentOperation)
+    }
+    
+    func processOperation(op: Operation) {
+        playSound()
+        
+        if CurrentOperation != Operation.Empty {
+            
+            if runningNumber != "" {
+                rightValStr = runningNumber
+                runningNumber = ""
+                
+                if CurrentOperation == Operation.Multiply {
+                    result = "\(Double(leftValStr)! * Double(rightValStr)!)"
+                } else if CurrentOperation == Operation.Divide {
+                    result = "\(Double(leftValStr)! / Double(rightValStr)!)"
+                } else if CurrentOperation == Operation.Add {
+                    result = "\(Double(leftValStr)! + Double(rightValStr)!)"
+                } else if CurrentOperation == Operation.Subtract {
+                    result = "\(Double(leftValStr)! - Double(rightValStr)!)"
+                }
+                
+                leftValStr = result
+                outputLbl.text = result
+            }
+
+            
+            CurrentOperation = op
+        }
+        else {
+            leftValStr = runningNumber
+            runningNumber = ""
+            CurrentOperation = op
+        }
+    }
+    
+    func playSound() {
+        if btnSound.playing {
+            btnSound.stop()
+        }
+        btnSound.play()
     }
     
 }
